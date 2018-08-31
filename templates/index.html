@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title></title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+
+<body>
+<!--If password or username is incorrect, flash error message at top -->
+<!--of page-->
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+    
+  <div class="container">
+
+    <h1>Current Orders</h1>
+    <table class="table">
+      <thead>
+       <th>Name</th>
+       <th>Phone</th>
+       <th>Items</th>
+       <th>Status</th>
+       <th>Update status</th>
+      </thead>
+      <tbody>
+      {% for row in table %}
+      <tr>
+	<td>{{ row.name }}</td>
+	<td>{{ row.phone }}</td>
+	<td>{{ row.items }}</td>
+	<td>{{ row.status }}</td>
+	<td><form action="{{ url_for('update') }}" method="post">
+	  <input type="hidden" value="{{ row.id }}" name="id">
+	  <select name="orderStatus" required>
+	    <option value="" selected="selected">--Order status--</option>
+	    <option value="pending">Pending</option>
+	    <option value="delayed">Delayed</option>
+	    <option value="confirmed">Confirmed</option>
+	    <option value="delivered">Delivered</option>
+	  </select>
+	  <input type="submit" value="Update">
+	  </form>
+	  <form action="{{ url_for('notify') }}" method="post">
+	  <input type="hidden" value="{{ row.id }}" name="notify_id">
+	  <button type="submit" name="sendMessageTo" value="{{ row.id }}">Notify Customer</button>
+	  </form>
+	</td>
+      </tr>
+      {% endfor %}	  
+    </tbody></table>
+
+</div>
+
+</body> </html>
